@@ -6,52 +6,57 @@ import (
 	"tax-calculator/internal/models"
 )
 
-func calculateWeightedAveragePrice(
-	currentQuantity int,
-	weightedAveragePrice float64,
-	quantityBought int,
-	priceBought float64,
-) float64 {
+func calculateWeightedAveragePrice(currentQuantity int, weightedAveragePrice float64, quantityBought int, priceBought float64) float64 {
 	totalQuantity := float64(currentQuantity + quantityBought)
 	return ((float64(currentQuantity) * weightedAveragePrice) + (float64(quantityBought) * priceBought)) / totalQuantity
 }
 
 func ProcessTransactions(transactions []models.Transaction) ([]models.TaxResult, error) {
 	var taxes []models.TaxResult
-	currentQuantity := 0
-	weightedAveragePrice := 0.0
-	prejudice := 0.0
+	operations := make(map[string]models.Operation)
 
 	for i := range transactions {
-		switch transactions[i].Operation {
-		case constants.BuyOperation:
-			weightedAveragePrice = calculateWeightedAveragePrice(
-				currentQuantity,
-				weightedAveragePrice,
-				transactions[i].Quantity,
-				transactions[i].UnitCost,
-			)
-			currentQuantity += transactions[i].Quantity
-			taxes = append(taxes, models.TaxResult{})
-		case constants.SellOperation:
-			capitalGain := (float64(transactions[i].Quantity) * transactions[i].UnitCost) - (float64(transactions[i].Quantity) * weightedAveragePrice) + prejudice
-			prejudice = 0.0
+		code := transactions[i].Code
+		operationType := transactions[i].Operation
+		quantity := transactions[i].Quantity
+		unitCost := transactions[i].UnitCost
 
-			if transactions[i].UnitCost < weightedAveragePrice || capitalGain < 0 {
-				prejudice += capitalGain
+		if _, ok := operations[code]; !ok {
+			operations[code] = models.Operation{
+				Quantity:             0,
+				WeightedAveragePrice: 0.0,
+				Prejudice:            0.0,
+			}
+		}
+
+		op := operations[code]
+
+		switch operationType {
+		case constants.BuyOperation:
+			op.WeightedAveragePrice = calculateWeightedAveragePrice(op.Quantity, op.WeightedAveragePrice, quantity, unitCost)
+			op.Quantity += quantity
+			taxes = append(taxes, models.TaxResult{Code: code, Tax: 0.0})
+		case constants.SellOperation:
+			capitalGain := (float64(quantity) * unitCost) - (float64(quantity) * op.WeightedAveragePrice) + op.Prejudice
+			op.Prejudice = 0.0
+
+			if unitCost < op.WeightedAveragePrice || capitalGain < 0 {
+				op.Prejudice += capitalGain
 				capitalGain = 0
 			}
 
-			if capitalGain > 0 && transactions[i].UnitCost > weightedAveragePrice && (transactions[i].UnitCost*float64(transactions[i].Quantity)) > 20000 {
-				taxes = append(taxes, models.TaxResult{Tax: capitalGain * constants.TAX})
+			if capitalGain > 0 && unitCost > op.WeightedAveragePrice && (float64(quantity)*unitCost) > 20000 {
+				taxes = append(taxes, models.TaxResult{Code: code, Tax: capitalGain * constants.TAX})
 			} else {
-				taxes = append(taxes, models.TaxResult{})
+				taxes = append(taxes, models.TaxResult{Code: code, Tax: 0.0})
 			}
 
-			currentQuantity -= transactions[i].Quantity
+			op.Quantity -= quantity
 		default:
 			return nil, errors.New("invalid operation")
 		}
+
+		operations[code] = op
 	}
 
 	return taxes, nil

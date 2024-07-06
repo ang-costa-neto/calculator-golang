@@ -15,19 +15,22 @@ func TestParseTransactions(t *testing.T) {
 			filename: "../../transaction_file_mock/transaction1.json",
 			expected: []models.Transaction{
 				{
+					Code:      "A",
 					Operation: "buy",
 					UnitCost:  10.00,
-					Quantity:  10000,
+					Quantity:  100,
 				},
 				{
+					Code:      "A",
 					Operation: "sell",
-					UnitCost:  20.00,
-					Quantity:  5000,
+					UnitCost:  15.00,
+					Quantity:  50,
 				},
 				{
+					Code:      "A",
 					Operation: "sell",
-					UnitCost:  5.00,
-					Quantity:  5000,
+					UnitCost:  15.00,
+					Quantity:  50,
 				},
 			},
 		},
