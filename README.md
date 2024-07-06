@@ -42,21 +42,24 @@ The input file must be in JSON format as shown below:
 
 ```json
 [
-  {
-    "operation": "buy",
-    "unit-cost": 10.00,
-    "quantity": 10000
-  },
-  {
-    "operation": "sell",
-    "unit-cost": 20.00,
-    "quantity": 5000
-  },
-  {
-    "operation": "sell",
-    "unit-cost": 5.00,
-    "quantity": 5000
-  }
+   {
+      "code":      "A",
+      "operation": "buy",
+      "unit-cost":  10.00,
+      "quantity":  100
+   },
+   {
+      "code":      "A",
+      "operation": "sell",
+      "unit-cost":  15.00,
+      "quantity":  50
+   },
+   {
+      "code":      "A",
+      "operation": "sell",
+      "unit-cost":  15.00,
+      "quantity":  50
+   }
 ]
 ```
 ### Running with a file
@@ -69,7 +72,7 @@ Replace transaction.json with the actual input file containing your transaction 
 ### Running with JSON Input Directly
 To pass JSON data directly via the command line, use the following command:
 ```bash
-tax-calculator --input '[{"operation":"buy","unit-cost":10.00,"quantity":100},{"operation":"sell","unit-cost":15.00,"quantity":50},{"operation":"sell","unit-cost":15.00,"quantity":50}]'
+tax-calculator --input '[{"code":"A","operation": "buy","unit-cost":10.00,"quantity":100,},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50,},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50}]'
 ```
 Make sure the JSON string is correctly formatted and enclosed in single quotes to avoid issues with shell parsing.
 
