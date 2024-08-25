@@ -1,4 +1,4 @@
-package tax_calculator
+package main
 
 import (
 	"bytes"
