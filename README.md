@@ -1,3 +1,5 @@
+![coverage](https://img.shields.io/codecov/c/github/ang-costa-neto/calculator-golang)
+
 # Tax Calculator
 
 This project is a simple tax calculator implemented in Go.
