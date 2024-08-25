@@ -19,7 +19,7 @@ Once you have built the project, you can run the Tax Calculator:
 Navigate to the directory containing the executable and run:
 
 ```bash
-./github.com/ang-costa-neto/calculator-golang
+./calculator-golang
 ```
 
 ### Windows
@@ -27,7 +27,7 @@ Navigate to the directory containing the executable and run:
 Navigate to the directory containing the executable and run:
 
 ```bash
-github.com/ang-costa-neto/calculator-golang.exe
+calculator-golang.exe
 ```
 
 ## Usage
@@ -59,14 +59,14 @@ The input file must be in JSON format as shown below:
 ### Running with a file
 To run the Tax Calculator using an input file, use the following command:
 ```bash
-./github.com/ang-costa-neto/calculator-golang -file transaction.json
+./calculator-golang -file transaction.json
 ```
 Replace transaction.json with the actual input file containing your transaction data.
 
 ### Running with JSON Input Directly
 To pass JSON data directly via the command line, use the following command:
 ```bash
-./github.com/ang-costa-neto/calculator-golang -input '[{"code":"A","operation": "buy","unit-cost":10.00,"quantity":100,},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50,},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50}]'
+./calculator-golang -input '[{"code":"A","operation": "buy","unit-cost":10.00,"quantity":100},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50},{"code":"A","operation": "sell","unit-cost":15.00,"quantity":50}]'
 ```
 Make sure the JSON string is correctly formatted and enclosed in single quotes to avoid issues with shell parsing.
 
