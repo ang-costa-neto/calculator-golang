@@ -3,7 +3,8 @@ package parser
 import (
 	"encoding/json"
 	"os"
-	"tax-calculator/internal/models"
+
+	"github.com/ang-costa-neto/calculator-golang/internal/models"
 )
 
 func ParseTransactions(fileName string) ([]models.Transaction, error) {

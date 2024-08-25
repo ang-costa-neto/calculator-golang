@@ -2,8 +2,9 @@ package handler
 
 import (
 	"errors"
-	"tax-calculator/internal/constants"
-	"tax-calculator/internal/models"
+
+	"github.com/ang-costa-neto/calculator-golang/internal/constants"
+	"github.com/ang-costa-neto/calculator-golang/internal/models"
 )
 
 func calculateWeightedAveragePrice(currentQuantity int, weightedAveragePrice float64, quantityBought int, priceBought float64) float64 {

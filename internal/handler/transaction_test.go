@@ -2,8 +2,9 @@ package handler
 
 import (
 	"reflect"
-	"tax-calculator/internal/models"
 	"testing"
+
+	"github.com/ang-costa-neto/calculator-golang/internal/models"
 )
 
 func TestProcessTransactions(t *testing.T) {

@@ -1,4 +1,4 @@
-package tax_calculator
+package main
 
 import (
 	"encoding/json"
@@ -6,14 +6,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"tax-calculator/internal/handler"
-	"tax-calculator/internal/models"
-	"tax-calculator/internal/parser"
+
+	"github.com/ang-costa-neto/calculator-golang/internal/handler"
+	"github.com/ang-costa-neto/calculator-golang/internal/models"
+	"github.com/ang-costa-neto/calculator-golang/internal/parser"
 )
 
 func main() {
 	var fileName string
 	var inputJSON string
+	var transactions []models.Transaction
+	var err error
 
 	flag.StringVar(&fileName, "file", "", "file containing JSON transactions")
 	flag.StringVar(&inputJSON, "input", "", "JSON string containing transactions")
@@ -23,9 +26,6 @@ func main() {
 		fmt.Println("Please provide a file with transactions using -file flag or JSON input using -input flag.")
 		os.Exit(1)
 	}
-
-	var transactions []models.Transaction
-	var err error
 
 	if inputJSON != "" {
 		err = json.NewDecoder(strings.NewReader(inputJSON)).Decode(&transactions)
