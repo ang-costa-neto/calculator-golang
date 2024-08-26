@@ -28,7 +28,7 @@ func run(fileName string, inputJSON string) ([]models.TaxResult, error) {
 		}
 	}
 
-	taxes, err := handler.ProcessTransactions(transactions)
+	taxes, err := handler.ProcessorInstance.ProcessTransactions(transactions)
 	if err != nil {
 		return nil, fmt.Errorf("error processing transactions: %w", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/ang-costa-neto/calculator-golang/internal/constants"
 	"github.com/ang-costa-neto/calculator-golang/internal/models"
 )
 
@@ -18,19 +19,19 @@ func TestProcessTransactions(t *testing.T) {
 			transactions: []models.Transaction{
 				{
 					Code:      "A",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  100,
 				},
 				{
 					Code:      "A",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  50,
 				},
 				{
 					Code:      "A",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  50,
 				},
@@ -55,19 +56,19 @@ func TestProcessTransactions(t *testing.T) {
 			transactions: []models.Transaction{
 				{
 					Code:      "B",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  10000,
 				},
 				{
 					Code:      "B",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  20.00,
 					Quantity:  5000,
 				},
 				{
 					Code:      "B",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  5.00,
 					Quantity:  5000,
 				},
@@ -92,19 +93,19 @@ func TestProcessTransactions(t *testing.T) {
 			transactions: []models.Transaction{
 				{
 					Code:      "C",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  10000,
 				},
 				{
 					Code:      "C",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  25.00,
 					Quantity:  5000,
 				},
 				{
 					Code:      "C",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  10000,
 				},
@@ -129,25 +130,25 @@ func TestProcessTransactions(t *testing.T) {
 			transactions: []models.Transaction{
 				{
 					Code:      "D",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  10000,
 				},
 				{
 					Code:      "D",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  25.00,
 					Quantity:  5000,
 				},
 				{
 					Code:      "D",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  10000,
 				},
 				{
 					Code:      "D",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  25.00,
 					Quantity:  5000,
 				},
@@ -176,38 +177,37 @@ func TestProcessTransactions(t *testing.T) {
 			transactions: []models.Transaction{
 				{
 					Code:      "A",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  100,
 				},
 				{
 					Code:      "B",
-					Operation: "buy",
+					Operation: constants.BuyOperation,
 					UnitCost:  10.00,
 					Quantity:  10000,
 				},
-
 				{
 					Code:      "A",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  50,
 				},
 				{
 					Code:      "B",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  20.00,
 					Quantity:  5000,
 				},
 				{
 					Code:      "A",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  15.00,
 					Quantity:  50,
 				},
 				{
 					Code:      "B",
-					Operation: "sell",
+					Operation: constants.SellOperation,
 					UnitCost:  5.00,
 					Quantity:  5000,
 				},
@@ -243,7 +243,9 @@ func TestProcessTransactions(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			taxes, err := ProcessTransactions(test.transactions)
+			// Use a real processor instance
+			processor := ProcessorInstance
+			taxes, err := processor.ProcessTransactions(test.transactions)
 			if err != nil {
 				t.Error(err)
 				return

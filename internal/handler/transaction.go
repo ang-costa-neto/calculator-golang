@@ -7,12 +7,18 @@ import (
 	"github.com/ang-costa-neto/calculator-golang/internal/models"
 )
 
+type Processor interface {
+	ProcessTransactions(transactions []models.Transaction) ([]models.TaxResult, error)
+}
+
+type realProcessor struct{}
+
 func calculateWeightedAveragePrice(currentQuantity int, weightedAveragePrice float64, quantityBought int, priceBought float64) float64 {
 	totalQuantity := float64(currentQuantity + quantityBought)
 	return ((float64(currentQuantity) * weightedAveragePrice) + (float64(quantityBought) * priceBought)) / totalQuantity
 }
 
-func ProcessTransactions(transactions []models.Transaction) ([]models.TaxResult, error) {
+func (p *realProcessor) ProcessTransactions(transactions []models.Transaction) ([]models.TaxResult, error) {
 	var taxes []models.TaxResult
 	operations := make(map[string]models.Operation)
 
@@ -62,3 +68,5 @@ func ProcessTransactions(transactions []models.Transaction) ([]models.TaxResult,
 
 	return taxes, nil
 }
+
+var ProcessorInstance Processor = &realProcessor{}
