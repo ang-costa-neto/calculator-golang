@@ -1,4 +1,4 @@
-![coverage](https://img.shields.io/codecov/c/github/ang-costa-neto/calculator-golang)
+[![codecov](https://codecov.io/github/ang-costa-neto/calculator-golang/branch/main/graph/badge.svg?token=ALKRS5M3RA)](https://codecov.io/github/ang-costa-neto/calculator-golang)
 
 # Tax Calculator
 
