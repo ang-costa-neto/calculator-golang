@@ -12,11 +12,33 @@ import (
 	"github.com/ang-costa-neto/calculator-golang/internal/parser"
 )
 
+func run(fileName string, inputJSON string) ([]models.TaxResult, error) {
+	var transactions []models.Transaction
+	var err error
+
+	if inputJSON != "" {
+		err = json.NewDecoder(strings.NewReader(inputJSON)).Decode(&transactions)
+		if err != nil {
+			return nil, fmt.Errorf("error decoding JSON input: %w", err)
+		}
+	} else if fileName != "" {
+		transactions, err = parser.ParseTransactions(fileName)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing transactions from file: %w", err)
+		}
+	}
+
+	taxes, err := handler.ProcessTransactions(transactions)
+	if err != nil {
+		return nil, fmt.Errorf("error processing transactions: %w", err)
+	}
+
+	return taxes, nil
+}
+
 func main() {
 	var fileName string
 	var inputJSON string
-	var transactions []models.Transaction
-	var err error
 
 	flag.StringVar(&fileName, "file", "", "file containing JSON transactions")
 	flag.StringVar(&inputJSON, "input", "", "JSON string containing transactions")
@@ -27,23 +49,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	if inputJSON != "" {
-		err = json.NewDecoder(strings.NewReader(inputJSON)).Decode(&transactions)
-		if err != nil {
-			fmt.Printf("Error decoding JSON input: %v\n", err)
-			os.Exit(1)
-		}
-	} else if fileName != "" {
-		transactions, err = parser.ParseTransactions(fileName)
-		if err != nil {
-			fmt.Printf("Error parsing transactions from file: %v\n", err)
-			os.Exit(1)
-		}
-	}
-
-	taxes, err := handler.ProcessTransactions(transactions)
+	taxes, err := run(fileName, inputJSON)
 	if err != nil {
-		fmt.Printf("Error processing transactions: %v\n", err)
+		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
 

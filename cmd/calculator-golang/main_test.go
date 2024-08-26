@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"os"
 	"testing"
 
@@ -10,7 +8,6 @@ import (
 )
 
 func TestMainWithFile(t *testing.T) {
-	// JSON de transações para teste
 	jsonData := `
 		[
 			{
@@ -33,60 +30,38 @@ func TestMainWithFile(t *testing.T) {
 			}
 		]
 	`
-	// Criar arquivo temporário
+
 	file, err := os.CreateTemp("", "transactions_*.json")
 	if err != nil {
 		t.Fatalf("Failed to create temporary file: %v", err)
 	}
-	defer os.Remove(file.Name())
+	defer func() {
+		file.Close()
+		os.Remove(file.Name())
+	}()
 
 	_, err = file.WriteString(jsonData)
 	if err != nil {
 		t.Fatalf("Failed to write to temporary file: %v", err)
 	}
-	file.Close()
 
-	// Capturar saída padrão
-	old := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	// Simular argumento de linha de comando com -file
-	os.Args = []string{"main.go", "-file", file.Name()}
-	main()
-
-	// Restaurar saída padrão e ler saída capturada
-	w.Close()
-	os.Stdout = old
-
-	var capturedOutput bytes.Buffer
-	_, err = capturedOutput.ReadFrom(r)
+	taxes, err := run(file.Name(), "")
 	if err != nil {
-		t.Fatalf("Failed to read captured output: %v", err)
+		t.Fatalf("Error running with file: %v", err)
 	}
 
-	// Desserializar saída para comparação
-	var actualOutput []models.TaxResult
-	err = json.Unmarshal(capturedOutput.Bytes(), &actualOutput)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal captured output: %v", err)
-	}
-
-	// Saída esperada
 	expectedOutput := []models.TaxResult{
 		{Code: "A", Tax: 0.00},
 		{Code: "A", Tax: 0.00},
 		{Code: "A", Tax: 0.00},
 	}
 
-	// Comparação dos resultados
-	if !equalTaxResults(actualOutput, expectedOutput) {
-		t.Errorf("Expected output %v, but got %v", expectedOutput, actualOutput)
+	if !equalTaxResults(taxes, expectedOutput) {
+		t.Errorf("Expected output %v, but got %v", expectedOutput, taxes)
 	}
 }
 
 func TestMainWithJSONInput(t *testing.T) {
-	// JSON de transações para teste
 	jsonInput := `
 		[
 			{
@@ -110,46 +85,22 @@ func TestMainWithJSONInput(t *testing.T) {
 		]
 	`
 
-	// Capturar saída padrão
-	old := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-
-	// Simular argumento de linha de comando com -input
-	os.Args = []string{"main.go", "-input", jsonInput}
-	main()
-
-	// Restaurar saída padrão e ler saída capturada
-	w.Close()
-	os.Stdout = old
-
-	var capturedOutput bytes.Buffer
-	_, err := capturedOutput.ReadFrom(r)
+	taxes, err := run("", jsonInput)
 	if err != nil {
-		t.Fatalf("Failed to read captured output: %v", err)
+		t.Fatalf("Error running with JSON input: %v", err)
 	}
 
-	// Desserializar saída para comparação
-	var actualOutput []models.TaxResult
-	err = json.Unmarshal(capturedOutput.Bytes(), &actualOutput)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal captured output: %v", err)
-	}
-
-	// Saída esperada
 	expectedOutput := []models.TaxResult{
 		{Code: "A", Tax: 0.00},
 		{Code: "A", Tax: 0.00},
 		{Code: "A", Tax: 0.00},
 	}
 
-	// Comparação dos resultados
-	if !equalTaxResults(actualOutput, expectedOutput) {
-		t.Errorf("Expected output %v, but got %v", expectedOutput, actualOutput)
+	if !equalTaxResults(taxes, expectedOutput) {
+		t.Errorf("Expected output %v, but got %v", expectedOutput, taxes)
 	}
 }
 
-// Função auxiliar para comparar os resultados do imposto
 func equalTaxResults(a, b []models.TaxResult) bool {
 	if len(a) != len(b) {
 		return false
