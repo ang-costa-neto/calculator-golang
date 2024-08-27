@@ -13,6 +13,10 @@ import (
 )
 
 func run(fileName string, inputJSON string) ([]models.TaxResult, error) {
+	if (fileName == "" && inputJSON == "") || (fileName != "" && inputJSON != "") {
+		return nil, fmt.Errorf("please provide either a file with transactions using -file flag or a JSON input using -input flag, but not both")
+	}
+
 	var transactions []models.Transaction
 	var err error
 
@@ -43,11 +47,6 @@ func main() {
 	flag.StringVar(&fileName, "file", "", "file containing JSON transactions")
 	flag.StringVar(&inputJSON, "input", "", "JSON string containing transactions")
 	flag.Parse()
-
-	if fileName == "" && inputJSON == "" {
-		fmt.Println("Please provide a file with transactions using -file flag or JSON input using -input flag.")
-		os.Exit(1)
-	}
 
 	taxes, err := run(fileName, inputJSON)
 	if err != nil {
